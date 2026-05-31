@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>高炉渣粒化余热回收模拟系统</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>高炉渣粒化余热回收模拟系统</h1>
+      <p class="subtitle">Blast Furnace Slag Granulation & Waste Heat Recovery Simulation</p>
+    </header>
+
+    <div class="main-content">
+      <div class="control-panel">
+        <h2>操作参数控制</h2>
+        
+        <div class="control-group">
+          <label for="slagTemp">渣罐初始温度 (°C):</label>
+          <input type="range" id="slagTemp" min="1300" max="1600" value="1450" step="10">
+          <span id="slagTempValue">1450</span>
+        </div>
+
+        <div class="control-group">
+          <label for="waterFlow">粒化器水流量 (L/min):</label>
+          <input type="range" id="waterFlow" min="50" max="300" value="150" step="10">
+          <span id="waterFlowValue">150</span>
+        </div>
+
+        <div class="control-group">
+          <label for="slagMassFlow">渣流量 (kg/s):</label>
+          <input type="range" id="slagMassFlow" min="5" max="50" value="20" step="1">
+          <span id="slagMassFlowValue">20</span>
+        </div>
+
+        <div class="control-group">
+          <label for="ambientTemp">环境温度 (°C):</label>
+          <input type="range" id="ambientTemp" min="0" max="40" value="25" step="1">
+          <span id="ambientTempValue">25</span>
+        </div>
+
+        <div class="control-group">
+          <label>渣成分配置:</label>
+          <div class="slag-composition">
+            <div class="composition-item">
+              <label for="caoContent">CaO (%):</label>
+              <input type="range" id="caoContent" min="30" max="50" value="40" step="1">
+              <span id="caoContentValue">40</span>
+            </div>
+            <div class="composition-item">
+              <label for="sio2Content">SiO₂ (%):</label>
+              <input type="range" id="sio2Content" min="25" max="45" value="35" step="1">
+              <span id="sio2ContentValue">35</span>
+            </div>
+            <div class="composition-item">
+              <label for="al2o3Content">Al₂O₃ (%):</label>
+              <input type="range" id="al2o3Content" min="5" max="20" value="12" step="1">
+              <span id="al2o3ContentValue">12</span>
+            </div>
+            <div class="composition-item">
+              <label for="mgoContent">MgO (%):</label>
+              <input type="range" id="mgoContent" min="3" max="15" value="8" step="1">
+              <span id="mgoContentValue">8</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="status-item">
+          <span class="label">渣发射率:</span>
+          <span id="slagEmissivity" class="value">--</span>
+        </div>
+        <div class="status-item">
+          <span class="label">有效热效率:</span>
+          <span id="effectiveEfficiency" class="value">-- %</span>
+        </div>
+
+        <div class="button-group">
+          <button id="startBtn" class="btn btn-primary">启动模拟</button>
+          <button id="pauseBtn" class="btn btn-warning">暂停</button>
+          <button id="resetBtn" class="btn btn-danger">重置</button>
+          <button id="saveBtn" class="btn btn-success">保存快照</button>
+        </div>
+
+        <div class="status-panel">
+          <h3>实时状态</h3>
+          <div class="status-grid">
+            <div class="status-item">
+              <span class="label">渣粒温度:</span>
+              <span id="slagParticleTemp" class="value">-- °C</span>
+            </div>
+            <div class="status-item">
+              <span class="label">蒸汽产量:</span>
+              <span id="steamProduction" class="value">-- kg/s</span>
+            </div>
+            <div class="status-item">
+              <span class="label">蒸汽温度:</span>
+              <span id="steamTemperature" class="value">-- °C</span>
+            </div>
+            <div class="status-item">
+              <span class="label">过热蒸汽:</span>
+              <span id="superheatedSteam" class="value">-- kg/s</span>
+            </div>
+            <div class="status-item">
+              <span class="label">热回收率:</span>
+              <span id="heatRecoveryRate" class="value">-- %</span>
+            </div>
+            <div class="status-item">
+              <span class="label">火用效率:</span>
+              <span id="exergyEfficiency" class="value">-- %</span>
+            </div>
+            <div class="status-item">
+              <span class="label">水蒸发量:</span>
+              <span id="waterEvaporated" class="value">-- kg/s</span>
+            </div>
+            <div class="status-item">
+              <span class="label">渣水比:</span>
+              <span id="slagWaterRatio" class="value">--</span>
+            </div>
+            <div class="status-item">
+              <span class="label">辐射热损:</span>
+              <span id="radiativeLoss" class="value">-- kW</span>
+            </div>
+            <div class="status-item">
+              <span class="label">回收能量:</span>
+              <span id="energyRecovered" class="value">-- MW</span>
+            </div>
+            <div class="status-item">
+              <span class="label">累计能量:</span>
+              <span id="totalEnergy" class="value">-- MJ</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="visualization-panel">
+        <h2>模拟可视化</h2>
+        <div id="canvasContainer" class="canvas-container">
+        </div>
+        <div class="legend">
+          <div class="legend-item">
+            <span class="legend-color slag-pot"></span>
+            <span>渣罐</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-color granulator"></span>
+            <span>粒化器</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-color slag-particle"></span>
+            <span>渣粒</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-color steam"></span>
+            <span>蒸汽</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="data-panel">
+      <h2>历史数据</h2>
+      <div class="data-buttons">
+        <button id="loadParamsBtn" class="btn btn-small">加载参数历史</button>
+        <button id="loadSnapshotsBtn" class="btn btn-small">加载快照历史</button>
+      </div>
+      <div id="dataDisplay" class="data-display"></div>
+    </div>
+
+    <footer>
+      <p>高炉渣粒化余热回收模拟系统 | 基于气雾冷却与热交换模型</p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

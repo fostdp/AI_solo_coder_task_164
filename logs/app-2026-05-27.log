@@ -1,0 +1,2 @@
+{"timestamp":"2026-05-27T01:49:45.163Z","level":"INFO","service":"slag-simulator","type":"database","message":"数据库初始化完成","pid":22272,"hostname":"LAPTOP-IOI3ERHJ"}
+{"timestamp":"2026-05-27T01:49:45.174Z","level":"INFO","service":"slag-simulator","type":"server","message":"高炉渣粒化余热回收模拟系统已启动: http://localhost:3000","pid":22272,"hostname":"LAPTOP-IOI3ERHJ"}
